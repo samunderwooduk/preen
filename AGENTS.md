@@ -63,7 +63,7 @@ open /tmp/preen-ci-check.noindex/Build/Products/Debug/Preen.app
 
 The appcast is <https://updates.samunderwood.co.uk/preen/appcast.xml>.
 
-Use the `mac-app-release` skill for releases and release notes.
+Use the `sam-mac-app-release` skill for releases and release notes.
 
 ## CI
 
