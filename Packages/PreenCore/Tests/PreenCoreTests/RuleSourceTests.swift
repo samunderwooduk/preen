@@ -7,11 +7,20 @@ import Testing
 
 struct RuleSourceTests {
     static let fixtures = Bundle.module.url(forResource: "Fixtures", withExtension: nil)!
+    /// The rules bundled with the app. Its community lists match the snapshots in Fixtures, and
+    /// Preen's own list has no other copy.
+    static let bundled = URL(filePath: #filePath).appending(path: "../../../../../Preen/Resources/Rules").standardizedFileURL
 
     @Test(arguments: RuleSource.allCases)
     func acceptsTheRealFiles(source: RuleSource) throws {
-        let data = try Data(contentsOf: Self.fixtures.appending(path: source.fileName))
+        let data = try Data(contentsOf: Self.bundled.appending(path: source.fileName))
         #expect(source.isValid(data))
+    }
+
+    /// A rule in Preen's own list that doesn't parse would do nothing, without a word.
+    @Test func everyRuleInPreensListParses() throws {
+        let list = try Data(contentsOf: Self.bundled.appending(path: RuleSource.preen.fileName))
+        #expect(try #require(RuleSource.preenRules(list)).skippedCount == 0)
     }
 
     @Test func rejectsAListCutShort() throws {
@@ -44,6 +53,8 @@ struct RuleSourceTests {
         #expect(!RuleSource.adGuard.isValid(Data("<html>Not found</html>".utf8)))
         #expect(!RuleSource.clearURLs.isValid(Data(#"{"providers":{}}"#.utf8)))
         #expect(!RuleSource.clearURLs.isValid(Data("not json".utf8)))
+        #expect(!RuleSource.preen.isValid(Data("! Title: Preen rules\n||linkedin.com^$removeparam=rcm\n".utf8)))
+        #expect(!RuleSource.preen.isValid(Data("<html>Not found</html>".utf8)))
     }
 }
 
@@ -52,12 +63,12 @@ struct RuleLoadingTests {
 
     private func save(_ source: RuleSource, _ data: Data? = nil) throws {
         try FileManager.default.createDirectory(at: saved, withIntermediateDirectories: true)
-        let data = try data ?? Data(contentsOf: RuleSourceTests.fixtures.appending(path: source.fileName))
+        let data = try data ?? Data(contentsOf: RuleSourceTests.bundled.appending(path: source.fileName))
         try data.write(to: saved.appending(path: source.fileName))
     }
 
     @Test func usesTheBundledRulesBeforeAnyDownload() async throws {
-        let rules = try await RuleDownloader(directory: saved).load(bundled: RuleSourceTests.fixtures)
+        let rules = try await RuleDownloader(directory: saved).load(bundled: RuleSourceTests.bundled)
         #expect(rules.downloaded.isEmpty)
         #expect(rules.parameters.ruleCount >= 1_000)
         #expect(rules.clearURLs.parameterRuleCount >= 200)
@@ -66,9 +77,17 @@ struct RuleLoadingTests {
     @Test func usesGoodDownloadsAndSaysWhen() async throws {
         defer { try? FileManager.default.removeItem(at: saved) }
         for source in RuleSource.allCases { try save(source) }
-        let rules = try await RuleDownloader(directory: saved).load(bundled: RuleSourceTests.fixtures)
+        let rules = try await RuleDownloader(directory: saved).load(bundled: RuleSourceTests.bundled)
         #expect(Set(rules.downloaded.keys) == Set(RuleSource.allCases))
         #expect(rules.parameters.ruleCount >= 1_000)
+    }
+
+    /// A link as LinkedIn's share button copies it, which only Preen's own list cleans fully.
+    @Test func preensListCleansAlongsideTheCommunityLists() throws {
+        let rules = try RuleDownloader(directory: saved).loadNow(bundled: RuleSourceTests.bundled)
+        let cleaner = LinkCleaner(parameters: rules.parameters, clearURLs: rules.clearURLs)
+        let link = "https://www.linkedin.com/posts/someone_a-post-7000000000000000000-AbCd?utm_source=share&utm_medium=member_desktop&rcm=ACoAAExample"
+        #expect(cleaner.cleanLink(link)?.cleaned == "https://www.linkedin.com/posts/someone_a-post-7000000000000000000-AbCd")
     }
 
     /// A damaged download falls back to the bundled copy of that list only.
@@ -76,7 +95,7 @@ struct RuleLoadingTests {
         defer { try? FileManager.default.removeItem(at: saved) }
         try save(.adGuard, Data("<html>Not found</html>".utf8))
         try save(.clearURLs)
-        let rules = try RuleDownloader(directory: saved).loadNow(bundled: RuleSourceTests.fixtures)
+        let rules = try RuleDownloader(directory: saved).loadNow(bundled: RuleSourceTests.bundled)
         #expect(rules.downloaded[.adGuard] == nil)
         #expect(rules.downloaded[.clearURLs] != nil)
         #expect(rules.parameters.ruleCount >= 1_000)

@@ -25,7 +25,7 @@ struct RulesSettingsPane: View {
                     }
                 }
             } footer: {
-                Text("Preen removes the tracking parameters these community lists name, and unwraps the redirect links they know. Cleaning happens on your Mac.")
+                Text("Preen removes the tracking parameters these lists name, and unwraps the redirect links they know. Its own rules cover what the community lists miss. Cleaning happens on your Mac.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -48,7 +48,7 @@ struct RulesSettingsPane: View {
 
     private func detail(for source: RuleSource) -> String {
         guard let status = model.ruleStatus[source] else { return "" }
-        let count = "\(status.ruleCount.formatted()) rules"
+        let count = status.ruleCount == 1 ? "1 rule" : "\(status.ruleCount.formatted()) rules"
         guard let downloaded = status.downloaded else { return "\(count), the copy that came with Preen" }
         return "\(count), updated \(downloaded.formatted(.relative(presentation: .named)))"
     }

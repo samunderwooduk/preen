@@ -1,0 +1,14 @@
+! Title: Preen rules
+! Homepage: https://github.com/samunderwooduk/preen
+! Licence: GPL-3.0-or-later
+!
+! Tracking parameters the AdGuard URL Tracking filter and the ClearURLs rules don't
+! remove yet, in AdGuard's $removeparam syntax. Exceptions (@@) work too, for a
+! parameter a site turns out to need.
+!
+! Preen knows the list by its first and last lines, so keep both as they are.
+
+! LinkedIn's share links carry it.
+||linkedin.com^$removeparam=rcm
+
+! End of Preen rules

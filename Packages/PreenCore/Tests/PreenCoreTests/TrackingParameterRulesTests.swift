@@ -89,6 +89,25 @@ struct TrackingParameterRulesTests {
         #expect(removed(list, from: "https://archive.ph/abc?utm_source=x").isEmpty)
     }
 
+    @Test func mergedListsShareRulesAndExceptions() {
+        let rules = TrackingParameterRules(list: """
+        $removeparam=utm_source
+        ||first.com^$removeparam=src
+        @@||first.com^$removeparam=rcm
+        """).merging(TrackingParameterRules(list: """
+        $removeparam=rcm
+        ||linkedin.com^$removeparam=trk
+        @@||keep.com^$removeparam=utm_source
+        """))
+        func removed(from link: String) -> [String] {
+            let parameters = link.split(separator: "?")[1].split(separator: "&").map(String.init)
+            return rules.indicesToRemove(link: link, host: Host.of(link)!, parameters: parameters).map { String(parameters[$0].prefix { $0 != "=" }) }
+        }
+        #expect(removed(from: "https://www.linkedin.com/posts/a?utm_source=share&rcm=x&trk=y") == ["utm_source", "rcm", "trk"])
+        #expect(removed(from: "https://keep.com/?utm_source=share&src=x") == [])
+        #expect(removed(from: "https://first.com/?utm_source=share&src=1&rcm=x") == ["utm_source", "src"])
+    }
+
     @Test func escapedCommasInRegex() {
         #expect(removed(#"$removeparam=/^__s=[a-z]{3\,}/"#, from: "https://a.com/?__s=abcd&__s2=x") == ["__s"])
     }
