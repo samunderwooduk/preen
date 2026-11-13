@@ -1,3 +1,15 @@
+## 1.1 (13 November 2026)
+
+### New
+- Preen now has its own list to catch trackers the two community lists miss, shown as Preen rules in Settings → Rules. Fixes for reported trackers can arrive within a day without an app update: the list refreshes daily with Update rules automatically on, or when you press Update Now.
+
+### Improved
+- More tracking parameters are removed from links in marketing emails and newsletters, adverts, and posts scheduled with social media tools.
+- Welcome and What's New have a new look, with soft colour from Preen's icon across the top in light and dark mode.
+
+### Fixed
+- Links you copy with LinkedIn's share button now come out clean.
+
 ## 1.0.3 (21 October 2026)
 
 ### Improved
