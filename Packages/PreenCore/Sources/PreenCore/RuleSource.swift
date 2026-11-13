@@ -3,10 +3,12 @@
 import CryptoKit
 import Foundation
 
-/// Where Preen's rules come from. Both are bundled with the app and refreshed while it runs.
+/// Where Preen's rules come from. Each is bundled with the app and refreshed while it runs.
 public enum RuleSource: String, CaseIterable, Sendable, Identifiable {
     case adGuard
     case clearURLs
+    /// Preen's own list, for what the community lists miss.
+    case preen
 
     public var id: Self { self }
 
@@ -14,6 +16,7 @@ public enum RuleSource: String, CaseIterable, Sendable, Identifiable {
         switch self {
         case .adGuard: "AdGuard URL Tracking filter"
         case .clearURLs: "ClearURLs rules"
+        case .preen: "Preen rules"
         }
     }
 
@@ -21,6 +24,7 @@ public enum RuleSource: String, CaseIterable, Sendable, Identifiable {
         switch self {
         case .adGuard: URL(string: "https://filters.adtidy.org/extension/ublock/filters/17.txt")!
         case .clearURLs: URL(string: "https://rules2.clearurls.xyz/data.minify.json")!
+        case .preen: URL(string: "https://updates.samunderwood.co.uk/preen/rules.txt")!
         }
     }
 
@@ -28,6 +32,7 @@ public enum RuleSource: String, CaseIterable, Sendable, Identifiable {
         switch self {
         case .adGuard: URL(string: "https://github.com/AdguardTeam/AdguardFilters")!
         case .clearURLs: URL(string: "https://github.com/ClearURLs/Rules")!
+        case .preen: URL(string: "https://github.com/samunderwooduk/preen/blob/main/Preen/Resources/Rules/preen.txt")!
         }
     }
 
@@ -36,16 +41,18 @@ public enum RuleSource: String, CaseIterable, Sendable, Identifiable {
         switch self {
         case .adGuard: "adguard-url-tracking.txt"
         case .clearURLs: "clearurls.json"
+        case .preen: "preen.txt"
         }
     }
 
     /// Whether a file holds a usable set of rules, judged by what it compiles to, so an error page,
-    /// an empty list or a truncated download never replaces a good copy. Both real files have far
-    /// more rules than these minimums.
+    /// an empty list or a truncated download never replaces a good copy. Both community files have
+    /// far more rules than these minimums.
     func isValid(_ data: Data) -> Bool {
         switch self {
         case .adGuard: Self.parameterRules(data) != nil
         case .clearURLs: Self.clearURLsRules(data) != nil
+        case .preen: Self.preenRules(data) != nil
         }
     }
 
@@ -54,6 +61,18 @@ public enum RuleSource: String, CaseIterable, Sendable, Identifiable {
         guard hasValidChecksum(data), let text = String(data: data, encoding: .utf8) else { return nil }
         let rules = TrackingParameterRules(list: text)
         return rules.ruleCount >= 1_000 ? rules : nil
+    }
+
+    static let preenFirstLine = "! Title: Preen rules"
+    static let preenLastLine = "! End of Preen rules"
+
+    /// The rules Preen's own list holds, or nil if it isn't that list or was cut short. The list
+    /// is too short for a minimum to tell, so it's known by its first and last lines.
+    static func preenRules(_ data: Data) -> TrackingParameterRules? {
+        guard let text = String(data: data, encoding: .utf8) else { return nil }
+        let lines = text.split(whereSeparator: \.isNewline).map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+        guard lines.first == preenFirstLine, lines.last == preenLastLine else { return nil }
+        return TrackingParameterRules(list: text)
     }
 
     /// The ClearURLs rules a file holds, or nil if it isn't a usable set.
@@ -106,7 +125,7 @@ public struct RuleDownloader: Sendable {
         return URLSession(configuration: configuration)
     }()
 
-    /// Both files are well under a megabyte.
+    /// Every file is well under a megabyte.
     public static let maximumSize = 10_000_000
 
     private let directory: URL
@@ -127,27 +146,33 @@ public struct RuleDownloader: Sendable {
 
     /// `load(bundled:)` on the caller's thread, for a caller that has to answer straight away.
     public func loadNow(bundled: URL) throws -> RuleSet {
-        func bundledFile(_ source: RuleSource) throws -> Data {
-            try Data(contentsOf: bundled.appending(path: source.fileName))
-        }
         var downloaded: [RuleSource: Date] = [:]
 
         // Checking a downloaded file compiles it, so a good one is compiled only once.
-        let parameters: TrackingParameterRules
-        if let saved = saved(.adGuard), let rules = RuleSource.parameterRules(saved.data) {
-            parameters = rules
-            downloaded[.adGuard] = saved.date
-        } else {
-            parameters = TrackingParameterRules(list: String(decoding: try bundledFile(.adGuard), as: UTF8.self))
+        func rules<Rules>(_ source: RuleSource, ifGood compile: (Data) -> Rules?, bundled compileBundled: (Data) throws -> Rules) throws -> Rules {
+            if let saved = saved(source), let good = compile(saved.data) {
+                downloaded[source] = saved.date
+                return good
+            }
+            return try compileBundled(Data(contentsOf: bundled.appending(path: source.fileName)))
         }
-        let clearURLs: ClearURLsRules
-        if let saved = saved(.clearURLs), let rules = RuleSource.clearURLsRules(saved.data) {
-            clearURLs = rules
-            downloaded[.clearURLs] = saved.date
-        } else {
-            clearURLs = try ClearURLsRules(data: bundledFile(.clearURLs))
+        func list(_ data: Data) -> TrackingParameterRules {
+            TrackingParameterRules(list: String(decoding: data, as: UTF8.self))
         }
-        return RuleSet(parameters: parameters, clearURLs: clearURLs, downloaded: downloaded)
+
+        let adGuard = try rules(.adGuard, ifGood: RuleSource.parameterRules, bundled: list)
+        let preen = try rules(.preen, ifGood: RuleSource.preenRules, bundled: list)
+        let clearURLs = try rules(.clearURLs, ifGood: RuleSource.clearURLsRules) { try ClearURLsRules(data: $0) }
+        return RuleSet(
+            parameters: adGuard.merging(preen),
+            clearURLs: clearURLs,
+            ruleCounts: [
+                .adGuard: adGuard.ruleCount,
+                .clearURLs: clearURLs.parameterRuleCount + clearURLs.redirectRuleCount,
+                .preen: preen.ruleCount,
+            ],
+            downloaded: downloaded
+        )
     }
 
     /// The downloaded copy, not yet checked, and when it was saved, if there is one.
@@ -173,10 +198,13 @@ public struct RuleDownloader: Sendable {
     }
 }
 
-/// Both sets of rules, compiled and ready to clean with.
+/// Every source's rules, compiled and ready to clean with.
 public struct RuleSet: Sendable {
+    /// AdGuard's list and Preen's own as one, so an exception in either applies to both.
     public let parameters: TrackingParameterRules
     public let clearURLs: ClearURLsRules
+    /// How many rules each source has.
+    public let ruleCounts: [RuleSource: Int]
     /// When each set in use was downloaded. Sets missing here are the copies bundled with the app.
     public let downloaded: [RuleSource: Date]
 }

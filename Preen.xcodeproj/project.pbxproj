@@ -33,6 +33,7 @@
 		E5E34182D0F1A2391B3172D4 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = A21C51A73A4FED397E907D10 /* Preferences.swift */; };
 		EA71BC63620E46FDDA1B340F /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = DC1A3A1E0EE5C9EBD2947080 /* CHANGELOG.md */; };
 		EB76E0A881A3992DF0866DB1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 807D23D03F55CE247001CA0C /* AppDelegate.swift */; };
+		FFFEF9B13ECAEFB6E8496DEA /* preen.txt in Resources */ = {isa = PBXBuildFile; fileRef = 638AB58CF4015CBA82DFE174 /* preen.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +48,7 @@
 		4F3574DCAF9B8918735398FE /* StatusIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusIcon.swift; sourceTree = "<group>"; };
 		4FAA80071AFD629D2BAE8E28 /* CleanLinksIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanLinksIntent.swift; sourceTree = "<group>"; };
 		525380C25210E960D257344A /* Preen.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Preen.entitlements; sourceTree = "<group>"; };
+		638AB58CF4015CBA82DFE174 /* preen.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = preen.txt; sourceTree = "<group>"; };
 		807D23D03F55CE247001CA0C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8E7A1AABFF15253D78B61D39 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		A126D248B2EF2A8E76974A93 /* StatusItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemController.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 			children = (
 				41C72D5A50168B87007449D0 /* adguard-url-tracking.txt */,
 				ED49E3C2EC77010C5EC6D5F9 /* clearurls.json */,
+				638AB58CF4015CBA82DFE174 /* preen.txt */,
 			);
 			path = Rules;
 			sourceTree = "<group>";
@@ -321,6 +324,7 @@
 				7FAD002B70FB6E04B6D26D4C /* Preen.icon in Resources */,
 				CAD1D5542D53BAB355A4057C /* adguard-url-tracking.txt in Resources */,
 				BD03D7ABE3E7BC386BC47002 /* clearurls.json in Resources */,
+				FFFEF9B13ECAEFB6E8496DEA /* preen.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

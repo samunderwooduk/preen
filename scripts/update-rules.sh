@@ -1,6 +1,7 @@
 #!/bin/zsh
-# Refreshes the rules bundled with Preen and the test fixtures, from the same addresses the app
-# downloads them from while it runs. Run it before a release, then run the tests.
+# Refreshes the community rules bundled with Preen and the test fixtures, from the same addresses
+# the app downloads them from while it runs. Run it before a release, then run the tests.
+# Preen's own list, preen.txt, is edited by hand and published with publish-rules.sh.
 set -euo pipefail
 root=${0:A:h:h}
 fetch() {

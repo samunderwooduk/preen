@@ -51,6 +51,26 @@ public struct TrackingParameterRules: Sendable {
         self.skippedCount = skippedCount
     }
 
+    private init(ruleCount: Int, skippedCount: Int, everywhereNames: Set<String>, rules: RuleIndex, exceptions: RuleIndex) {
+        self.ruleCount = ruleCount
+        self.skippedCount = skippedCount
+        self.everywhereNames = everywhereNames
+        self.rules = rules
+        self.exceptions = exceptions
+    }
+
+    /// These rules and another list's as one set, so each list's exceptions apply to the other's
+    /// rules as well.
+    func merging(_ other: TrackingParameterRules) -> TrackingParameterRules {
+        TrackingParameterRules(
+            ruleCount: ruleCount + other.ruleCount,
+            skippedCount: skippedCount + other.skippedCount,
+            everywhereNames: everywhereNames.union(other.everywhereNames),
+            rules: rules.merging(other.rules),
+            exceptions: exceptions.merging(other.exceptions)
+        )
+    }
+
     /// The indices of the query parameters to remove from a link.
     /// - Parameters:
     ///   - link: The whole link, which rules' URL patterns are matched against.
@@ -385,6 +405,13 @@ struct RuleIndex: Sendable {
         } else {
             for host in hosts { byHost[host, default: []].append(rule) }
         }
+    }
+
+    func merging(_ other: RuleIndex) -> RuleIndex {
+        var merged = self
+        merged.byHost.merge(other.byHost, uniquingKeysWith: +)
+        merged.anywhere += other.anywhere
+        return merged
     }
 
     func candidates(host: String) -> [ParameterRule] {

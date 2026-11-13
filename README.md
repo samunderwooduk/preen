@@ -2,7 +2,7 @@
 
 A free, open-source menu bar app for macOS that takes tracking parameters and redirect wrappers out of links as you copy them, and leaves the rest of what you copied as it was. The menu shows what it removed from each link, with a way to restore the original.
 
-Preen removes the parameters named in AdGuard's [URL Tracking filter](https://github.com/AdguardTeam/AdguardFilters) (its `$removeparam` rules) and the per-site parameters in the [ClearURLs rules](https://github.com/ClearURLs/Rules), and unwraps the redirect links ClearURLs knows, plus a few it doesn't, such as Outlook Safe Links. Both rule sets are bundled and refreshed once a day. Cleaning happens on the Mac.
+Preen removes the parameters named in AdGuard's [URL Tracking filter](https://github.com/AdguardTeam/AdguardFilters) (its `$removeparam` rules) and the per-site parameters in the [ClearURLs rules](https://github.com/ClearURLs/Rules), and unwraps the redirect links ClearURLs knows, plus a few it doesn't, such as Outlook Safe Links. A short list of its own, [`preen.txt`](Preen/Resources/Rules/preen.txt), covers parameters neither has yet. All three are bundled and refreshed once a day. Cleaning happens on the Mac.
 
 ## Download
 
@@ -22,7 +22,7 @@ The app depends on SamKit, a private package of interface and update code shared
 cd Packages/PreenCore && swift test
 ```
 
-`scripts/update-rules.sh` refreshes the bundled rules and the test fixtures; run the tests afterwards.
+`scripts/update-rules.sh` refreshes the bundled community rules and the test fixtures; run the tests afterwards.
 
 ## Licence
 

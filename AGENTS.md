@@ -44,7 +44,18 @@ open /tmp/preen-ci-check.noindex/Build/Products/Debug/Preen.app
 
 - `PreenTests` is an unhosted unit-test target. It compiles the clipboard watcher directly and gives it its own test pasteboards, so tests do not launch the app or clean the system clipboard.
 - `Packages/PreenCore` has no dependencies. Its `PreenCoreTests` run both through the Xcode scheme and independently with SwiftPM.
-- `scripts/update-rules.sh` refreshes both the bundled rules and the matching test fixtures. Run the tests afterwards.
+- `scripts/update-rules.sh` refreshes the two bundled community lists and the matching test fixtures. Run the tests afterwards.
+
+## Preen's own rules
+
+`Preen/Resources/Rules/preen.txt` holds tracking parameters the AdGuard and ClearURLs lists miss. It is bundled with the app, and installed copies refresh it daily from <https://updates.samunderwood.co.uk/preen/rules.txt>, so a reported gap is fixed without an app release.
+
+- Rules use AdGuard's `$removeparam` syntax, such as `||linkedin.com^$removeparam=rcm`; `@@` exceptions keep a parameter a site needs. Scope a rule to its site unless the name could only be a tracker, because a bare `$removeparam=name` applies to every link.
+- Keep the file's first and last lines: the app accepts a download only when both are there.
+- The tests read this file directly, so it has no fixture copy. After editing it, run `swift test --package-path Packages/PreenCore`; a rule that doesn't parse fails there.
+- `scripts/publish-rules.sh` runs those tests, uploads the file and checks it is live. It publishes only from a clean checkout of `origin/main`, and it changes every installed copy within a day, so run it only when Sam asks.
+- Publish a changed list before releasing: installed copies prefer the published list to the bundled one, so `scripts/release.sh` stops when the two differ.
+- A reported link can carry a real person's identifier. Use a made-up value in tests and examples.
 
 ## Releases
 

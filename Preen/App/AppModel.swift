@@ -86,7 +86,7 @@ final class AppModel {
     private let downloader: RuleDownloader
     private var resumeTimer: Timer?
 
-    /// Rules are refreshed at most daily; both lists change slowly.
+    /// Rules are refreshed at most daily; the lists change slowly.
     private static let ruleMaximumAge: TimeInterval = 24 * 60 * 60
 
     init() {
@@ -301,10 +301,9 @@ final class AppModel {
         guard isFirst || load > ruleLoadInUse else { return }
         ruleLoadInUse = load
         cleaner = LinkCleaner(parameters: rules.parameters, clearURLs: rules.clearURLs, exceptedSites: Set(exceptedSites))
-        ruleStatus = [
-            .adGuard: RuleStatus(ruleCount: rules.parameters.ruleCount, downloaded: rules.downloaded[.adGuard]),
-            .clearURLs: RuleStatus(ruleCount: rules.clearURLs.parameterRuleCount + rules.clearURLs.redirectRuleCount, downloaded: rules.downloaded[.clearURLs]),
-        ]
+        ruleStatus = rules.ruleCounts.reduce(into: [:]) { status, count in
+            status[count.key] = RuleStatus(ruleCount: count.value, downloaded: rules.downloaded[count.key])
+        }
         guard isFirst else { return }
         if let copy = pendingCopy {
             pendingCopy = nil
