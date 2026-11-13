@@ -11,4 +11,105 @@
 ! LinkedIn's share links carry it.
 ||linkedin.com^$removeparam=rcm
 
+! LinkedIn adds it to the links in its adverts.
+$removeparam=li_fat_id
+
+! Acoustic, once IBM Coremetrics.
+$removeparam=cm_re
+$removeparam=cm_sp
+
+! Adobe Analytics.
+$removeparam=s_campaign
+
+! Brave's adverts.
+$removeparam=brave-campaign-id
+$removeparam=brave-creative-id
+$removeparam=brave-creative-set-id
+
+! Emarsys.
+$removeparam=sc_customer
+$removeparam=sc_eh
+$removeparam=sc_lid
+$removeparam=sc_llid
+$removeparam=sc_src
+$removeparam=sc_uid
+
+! Hootsuite.
+$removeparam=hootPostID
+
+! Impact.
+$removeparam=ircid
+$removeparam=nb_adid
+$removeparam=nb_aname
+$removeparam=nb_asize
+$removeparam=nb_atype
+$removeparam=nb_cid
+$removeparam=nb_mtype
+$removeparam=nb_partner_name
+$removeparam=nb_partner_shared_id
+$removeparam=nb_pid
+$removeparam=nb_platform
+$removeparam=nb_product_sku
+
+! Keela.
+$removeparam=eblastId
+
+! Klaviyo.
+$removeparam=_kx
+
+! MailerLite.
+$removeparam=ml_sub
+$removeparam=ml_sub_hash
+
+! Matomo, once Piwik.
+$removeparam=piwik_campaign
+$removeparam=piwik_kwd
+$removeparam=pk_cid
+$removeparam=pk_content
+$removeparam=pk_cpn
+$removeparam=pk_keyword
+$removeparam=pk_kwd
+
+! Piano Analytics, once AT Internet.
+$removeparam=at_channel
+$removeparam=at_detail_placement
+$removeparam=at_format
+$removeparam=at_general_placement
+$removeparam=at_identifier
+$removeparam=at_network
+$removeparam=at_platform
+$removeparam=at_term
+$removeparam=at_type
+$removeparam=at_variant
+
+! Salesforce Marketing Cloud.
+$removeparam=et_cid
+$removeparam=et_lid
+$removeparam=et_rid
+
+! Squarespace's email campaigns.
+$removeparam=ss_campaign_id
+$removeparam=ss_campaign_name
+$removeparam=ss_campaign_sent_date
+$removeparam=ss_source
+
+! The ABC television stations.
+$removeparam=ex_cid
+
+! X's adverts.
+$removeparam=tw_adid
+$removeparam=tw_campaign
+$removeparam=tw_content
+$removeparam=tw_kwdid
+$removeparam=tw_term
+
+! Yandex.
+$removeparam=yadclid
+$removeparam=yadordid
+$removeparam=ymclid
+
+! Campaign tags written like Google's.
+$removeparam=utm_custom1
+$removeparam=utm_custom2
+
 ! End of Preen rules
