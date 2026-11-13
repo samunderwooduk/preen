@@ -97,6 +97,7 @@ struct TrackingParameterRulesTests {
         """).merging(TrackingParameterRules(list: """
         $removeparam=rcm
         ||linkedin.com^$removeparam=trk
+        ||first.com^$removeparam=ref
         @@||keep.com^$removeparam=utm_source
         """))
         func removed(from link: String) -> [String] {
@@ -105,7 +106,7 @@ struct TrackingParameterRulesTests {
         }
         #expect(removed(from: "https://www.linkedin.com/posts/a?utm_source=share&rcm=x&trk=y") == ["utm_source", "rcm", "trk"])
         #expect(removed(from: "https://keep.com/?utm_source=share&src=x") == [])
-        #expect(removed(from: "https://first.com/?utm_source=share&src=1&rcm=x") == ["utm_source", "src"])
+        #expect(removed(from: "https://first.com/?utm_source=share&src=1&rcm=x&ref=2") == ["utm_source", "src", "ref"])
     }
 
     @Test func escapedCommasInRegex() {

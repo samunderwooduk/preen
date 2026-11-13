@@ -6,6 +6,9 @@
 ! remove yet, in AdGuard's $removeparam syntax. Exceptions (@@) work too, for a
 ! parameter a site turns out to need.
 !
+! Many of the names come from Brave's clean-urls list,
+! https://github.com/brave/adblock-lists (MPL-2.0).
+!
 ! Preen knows the list by its first and last lines, so keep both as they are.
 
 ! LinkedIn's share links carry it.
@@ -39,6 +42,8 @@ $removeparam=hootPostID
 
 ! Impact.
 $removeparam=ircid
+
+! Northbeam.
 $removeparam=nb_adid
 $removeparam=nb_aname
 $removeparam=nb_asize
@@ -53,9 +58,6 @@ $removeparam=nb_product_sku
 
 ! Keela.
 $removeparam=eblastId
-
-! Klaviyo.
-$removeparam=_kx
 
 ! MailerLite.
 $removeparam=ml_sub
@@ -96,7 +98,7 @@ $removeparam=ss_source
 ! The ABC television stations.
 $removeparam=ex_cid
 
-! X's adverts.
+! Triple Whale.
 $removeparam=tw_adid
 $removeparam=tw_campaign
 $removeparam=tw_content
