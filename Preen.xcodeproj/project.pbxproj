@@ -664,7 +664,7 @@
 			repositoryURL = "https://github.com/samunderwooduk/samkit";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.11.0;
+				minimumVersion = 0.14.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
