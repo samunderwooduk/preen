@@ -1,3 +1,9 @@
+## 1.2 (16 November 2026)
+
+### Improved
+- Preen has a new app icon: a quill of three glass feathers on a coral background, with dark, clear and tinted versions to match your macOS icon style.
+- The menu bar icon now uses the same three-feather quill.
+
 ## 1.1 (13 November 2026)
 
 ### New
