@@ -1,107 +1,90 @@
 {
-  "groups": [
+  "features" : [
+    "refractivity"
+  ],
+  "fill-specializations" : [
     {
-      "name": "02 · Shaft",
-      "layers": [
-        {
-          "image-name": "02-shaft.svg",
-          "name": "Shaft",
-          "fill-specializations": [
-            {
-              "appearance": "dark",
-              "value": {
-                "solid": "srgb:0.909804,0.376471,0.298039,1"
-              }
-            },
-            {
-              "appearance": "tinted",
-              "value": {
-                "solid": "gray:0.4,1"
-              }
-            }
-          ]
-        }
-      ],
-      "shadow": {
-        "kind": "neutral",
-        "opacity": 0
-      },
-      "translucency": {
-        "enabled": false,
-        "value": 0
-      },
-      "specular": false
+      "value" : {
+        "linear-gradient" : [
+          "srgb:1.00000,0.43529,0.30588,1.00000",
+          "srgb:0.92549,0.19608,0.13333,1.00000"
+        ]
+      }
     },
     {
-      "name": "01 · Feather",
-      "layers": [
-        {
-          "image-name": "01-feather.svg",
-          "name": "Feather",
-          "fill-specializations": [
-            {
-              "appearance": "dark",
-              "value": {
-                "solid": "srgb:1.000000,0.866667,0.819608,1"
-              }
-            },
-            {
-              "appearance": "tinted",
-              "value": {
-                "solid": "gray:0.9,1"
-              }
-            }
-          ]
-        }
-      ],
-      "shadow": {
-        "kind": "neutral",
-        "opacity": 0.3
-      },
-      "translucency": {
-        "enabled": true,
-        "value": 0.2
-      },
-      "specular": true,
-      "blend-mode-specializations": [
-        {
-          "appearance": "tinted",
-          "value": "plus-lighter"
-        }
-      ]
+      "appearance" : "dark",
+      "value" : {
+        "linear-gradient" : [
+          "srgb:0.23922,0.10196,0.07059,1.00000",
+          "srgb:0.09020,0.03137,0.02353,1.00000"
+        ]
+      }
+    },
+    {
+      "appearance" : "tinted",
+      "value" : {
+        "linear-gradient" : [
+          "gray:0.30000,1.00000",
+          "gray:0.15000,1.00000"
+        ]
+      }
     }
   ],
-  "supported-platforms": {
-    "squares": [
-      "macOS"
-    ]
-  },
-  "fill-specializations": [
+  "groups" : [
     {
-      "value": {
-        "linear-gradient": [
-          "srgb:1.000000,0.580392,0.462745,1",
-          "srgb:0.882353,0.321569,0.243137,1"
-        ]
+      "blur-material" : 0.4,
+      "layers" : [
+        {
+          "glass" : true,
+          "image-name" : "02-top-blades.svg",
+          "name" : "Top blades"
+        }
+      ],
+      "lighting" : "combined",
+      "name" : "02 · Top blades",
+      "refractivity" : {
+        "depth" : 0.3,
+        "enabled" : true,
+        "strength" : 0.8
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.15
       }
     },
     {
-      "appearance": "dark",
-      "value": {
-        "linear-gradient": [
-          "srgb:0.231373,0.094118,0.070588,1",
-          "srgb:0.117647,0.043137,0.031373,1"
-        ]
-      }
-    },
-    {
-      "appearance": "tinted",
-      "value": {
-        "linear-gradient": [
-          "gray:0.55,1",
-          "gray:0.35,1"
-        ]
+      "blur-material" : 0.4,
+      "layers" : [
+        {
+          "image-name" : "01-lower-blade.svg",
+          "name" : "Lower blade"
+        }
+      ],
+      "name" : "01 · Lower blade",
+      "refractivity" : {
+        "depth" : 0.3,
+        "enabled" : true,
+        "strength" : 0.8
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.15
       }
     }
-  ]
+  ],
+  "supported-platforms" : {
+    "squares" : [
+      "macOS"
+    ]
+  }
 }
